@@ -20,7 +20,7 @@ def parse_arguments():
         help="(optional) file to search in (can be multiple) OR directory to search in if searching recursively",
     )
 
-    # Optional arguments
+    # Options
     parser.add_argument(
         "-r", "--recursive", action="store_true", help="search recursively"
     )
