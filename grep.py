@@ -43,11 +43,11 @@ def grep(
     multiple_files = len(files) > 1 or recursive
 
     if ignore_case:
-        pattern = fr"(?i){pattern}"
+        pattern = rf"(?i){pattern}"
     if word:
-        pattern = fr"\b{pattern}\b"
+        pattern = rf"\b{pattern}\b"
     if invert_match:
-        pattern = fr"^((?!{pattern}).)*$"
+        pattern = rf"^((?!{pattern}).)*$"
 
     if recursive:
         directory = files[0] if len(files) > 0 else "."
@@ -55,20 +55,24 @@ def grep(
         files = _get_all_files_in_directory(directory_path)
 
     if files is not None:
-        for file in files:
+        for file_index, file in enumerate(files):
             line_iterator = _read_file_by_line(file)
-            matching_lines_iterator = find_matching_lines(pattern, line_iterator, before_context, after_context)
+            matching_lines_iterator = find_matching_lines(
+                pattern, line_iterator, before_context, after_context
+            )
             try:
                 previous_line_index = -1
                 for line in matching_lines_iterator:
-                    if line.index > previous_line_index + 1:
+                    if (line.index > previous_line_index + 1) or (
+                        line.index == 0 and file_index > 0
+                    ):
                         print(f"{Fore.LIGHTBLUE_EX}--{Style.RESET_ALL}")
                     previous_line_index = line.index
                     output = ""
                     if multiple_files:
-                        output += f"{Fore.LIGHTMAGENTA_EX}{file}{Style.RESET_ALL}:"
+                        output += f"{Fore.LIGHTMAGENTA_EX}{file}{Fore.LIGHTBLUE_EX}:{Style.RESET_ALL}"
                     if line_number:
-                        output += f"{Fore.LIGHTCYAN_EX}{line.index + 1}{Style.RESET_ALL}:"
+                        output += f"{Fore.LIGHTCYAN_EX}{line.index + 1}{Fore.LIGHTBLUE_EX}:{Style.RESET_ALL}"
                     output += str(line)
                     print(output)
             except UnicodeDecodeError:
@@ -77,6 +81,8 @@ def grep(
                     print(f"{file}: not a text file")
                 continue
     else:
-        matching_lines_iterator = find_matching_lines(pattern, sys.stdin, before_context, after_context)
+        matching_lines_iterator = find_matching_lines(
+            pattern, sys.stdin, before_context, after_context
+        )
         for line in matching_lines_iterator:
             print(line)

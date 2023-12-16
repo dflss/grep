@@ -37,10 +37,16 @@ def parse_arguments():
         "-w", "--word", action="store_true", help="match only whole words"
     )
     parser.add_argument(
-        "-n", "--line-number", action="store_true", help="print line number with output lines"
+        "-n",
+        "--line-number",
+        action="store_true",
+        help="print line number with output lines",
     )
     parser.add_argument(
-        "-t", "--only-text-files", action="store_true", help="supress output for non-text files"
+        "-t",
+        "--only-text-files",
+        action="store_true",
+        help="supress output for non-text files",
     )
     parser.add_argument(
         "-B",

@@ -36,5 +36,8 @@ def find_matching_lines(
             if len(previous_lines) < before_context:
                 previous_lines.append(Line(current_line, [], i))
             # Yield current line if it's a part of after context for the previously matched line
-            if last_matched_line_index >= 0 and i - last_matched_line_index <= after_context:
+            if (
+                last_matched_line_index >= 0
+                and i - last_matched_line_index <= after_context
+            ):
                 yield Line(current_line, [], i)
