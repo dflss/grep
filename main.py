@@ -15,7 +15,7 @@ def parse_arguments():
     parser.add_argument("pattern", help="pattern to search")
     parser.add_argument(
         "file",
-        nargs="?",
+        nargs="*",
         default=None,
         help="(optional) file to search in (can be multiple) OR directory to search in if searching recursively",
     )
@@ -35,6 +35,12 @@ def parse_arguments():
     )
     parser.add_argument(
         "-w", "--word", action="store_true", help="match only whole words"
+    )
+    parser.add_argument(
+        "-n", "--line-number", action="store_true", help="print line number with output lines"
+    )
+    parser.add_argument(
+        "-t", "--only-text-files", action="store_true", help="supress output for non-text files"
     )
     parser.add_argument(
         "-B",
@@ -65,6 +71,8 @@ if __name__ == "__main__":
         ignore_case=args.ignore_case,
         invert_match=args.invert_match,
         word=args.word,
+        line_number=args.line_number,
+        only_text_files=args.only_text_files,
         before_context=args.before_context,
         after_context=args.after_context,
     )
