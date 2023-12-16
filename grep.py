@@ -3,7 +3,6 @@ import sys
 from collections import deque
 from collections.abc import Generator, Iterable
 from dataclasses import dataclass
-from typing import Optional
 
 from colorama import Fore, Style
 
@@ -16,12 +15,10 @@ class Interval:
 
 
 @dataclass
-class MatchingLine:
-    """A line that matches the pattern."""
+class Line:
+    """A line of text."""
     text: str
-    intervals_matched: list[Interval]
-    before_context: list[str]
-    after_context: list[str]
+    matching_intervals: list[Interval]
 
 
 def _raise_if_not_text_file(path: str) -> None:
@@ -36,56 +33,45 @@ def _get_subpaths(path: str) -> Generator[str, None, None]:
     yield "test_path"
 
 
-def _process_line(regex: str, line: str) -> Optional[MatchingLine]:
+def _get_matching_intervals(regex: str, line: str) -> list[Interval]:
     matches = re.finditer(regex, line)
-    intervals = []
-    for match in matches:
-        intervals.append(Interval(match.start(), match.end()))
-    if len(intervals) > 0:
-        return MatchingLine(line, intervals, before_context=[], after_context=[])
-    return None
+    return [Interval(match.start(), match.end()) for match in matches]
+
 
 def _find_matching_lines(
     regex: str, lines: Iterable[str], before_context: int, after_context: int
-) -> Generator[MatchingLine, None, None]:
-    window_size = before_context + after_context + 1
-    window_before = deque(maxlen=before_context)
-    window_after = deque(maxlen=after_context)
-    current_line = None
+) -> Generator[Line, None, None]:
+    previous_lines = deque(maxlen=before_context)
+    last_matched_line_index = -1
 
-    for i, line in enumerate(lines):
-        if i == 0:
-            current_line = line
-        elif i <= after_context:
-            window_after.append(line)
-            if i == after_context:
-                # process line
-                matching_line = _process_line(regex, current_line)
-                if matching_line is not None:
-                    # Add before context and after context if needed
-                    yield matching_line
+    for i, current_line in enumerate(lines):
+        matching_intervals = _get_matching_intervals(regex, current_line)
+        current_line = current_line.rstrip("\r\n")
+        # Line is a match
+        if len(matching_intervals) > 0:
+            while len(previous_lines) > 0:
+                # Yield all lines that are part of before context for this line
+                yield previous_lines.pop()
+            yield Line(current_line, matching_intervals)
+            last_matched_line_index = i
+        # Line is not a match
         else:
-            if len(window_before) == before_context:
-                window_before.popleft()
-            window_before.append(current_line)
-            current_line = window_after.popleft()
-            window_after.append(line)
-        print("i", i)
-        print("before", window_before)
-        print("current", current_line)
-        print("after", window_after)
-        print("*******")
-
-    # process lines in window_after
+            # Remove oldest previous line
+            if 0 < before_context == len(previous_lines):
+                previous_lines.popleft()
+            # Add current line to previous lines
+            if len(previous_lines) < before_context:
+                previous_lines.append(Line(current_line, []))
+            # Yield current line if it's a part of after context for the previously matched line
+            if last_matched_line_index >= 0 and i - last_matched_line_index <= after_context:
+                yield Line(current_line, [])
 
 
-
-
-def _print_matching_lines(lines: Iterable[MatchingLine]) -> None:
+def _print_matching_lines(lines: Iterable[Line]) -> None:
     for line in lines:
         output = ""
         previous_interval_end = 0
-        for interval in line.intervals_matched:
+        for interval in line.matching_intervals:
             if interval.start > 0:
                 output += line.text[previous_interval_end:interval.start]
             output += Fore.RED + line.text[interval.start:interval.end] + Style.RESET_ALL
