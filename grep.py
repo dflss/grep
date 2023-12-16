@@ -4,6 +4,7 @@ from collections.abc import Generator
 from pathlib import Path
 from colorama import Fore, Style
 
+from printer import Printer
 from search import find_matching_lines
 
 
@@ -41,6 +42,11 @@ def grep(
     after_context: int,
 ) -> None:
     multiple_files = len(files) > 1 or recursive
+    printer = Printer(
+        print_filename=multiple_files,
+        print_line_number=line_number,
+        only_text_files=only_text_files,
+    )
 
     if ignore_case:
         pattern = rf"(?i){pattern}"
@@ -54,35 +60,15 @@ def grep(
         directory_path = Path(directory)
         files = _get_all_files_in_directory(directory_path)
 
-    if files is not None:
+    if len(files) > 0:
         for file_index, file in enumerate(files):
             line_iterator = _read_file_by_line(file)
             matching_lines_iterator = find_matching_lines(
                 pattern, line_iterator, before_context, after_context
             )
-            try:
-                previous_line_index = -1
-                for line in matching_lines_iterator:
-                    if (line.index > previous_line_index + 1) or (
-                        line.index == 0 and file_index > 0
-                    ):
-                        print(f"{Fore.LIGHTBLUE_EX}--{Style.RESET_ALL}")
-                    previous_line_index = line.index
-                    output = ""
-                    if multiple_files:
-                        output += f"{Fore.LIGHTMAGENTA_EX}{file}{Fore.LIGHTBLUE_EX}:{Style.RESET_ALL}"
-                    if line_number:
-                        output += f"{Fore.LIGHTCYAN_EX}{line.index + 1}{Fore.LIGHTBLUE_EX}:{Style.RESET_ALL}"
-                    output += str(line)
-                    print(output)
-            except UnicodeDecodeError:
-                if not only_text_files:
-                    print(f"{Fore.LIGHTBLUE_EX}--{Style.RESET_ALL}")
-                    print(f"{file}: not a text file")
-                continue
+            printer.print_output(matching_lines_iterator, file)
     else:
         matching_lines_iterator = find_matching_lines(
             pattern, sys.stdin, before_context, after_context
         )
-        for line in matching_lines_iterator:
-            print(line)
+        printer.print_output(matching_lines_iterator, None)
