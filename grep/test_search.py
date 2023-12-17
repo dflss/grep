@@ -203,11 +203,11 @@ def compare_iterator_with_expected_output(iterator_to_test, expected_output):
     ],
 )
 def test_find_matching_lines(
-    regex,
-    lines,
-    number_of_lines_before_match,
-    number_of_lines_after_match,
-    expected_result,
+    regex: str,
+    lines: list[str],
+    number_of_lines_before_match: int,
+    number_of_lines_after_match: int,
+    expected_result: list[Line],
 ):
     generator = find_matching_lines(
         regex=cast(str, regex),

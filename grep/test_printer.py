@@ -53,9 +53,9 @@ from printer import Printer
     ],
 )
 def test_print_line(
-    capsys,
-    lines,
-    expected_output,
+    capsys: pytest.CaptureFixture[str],
+    lines: list[Line],
+    expected_output: str,
 ):
     printer = Printer(print_line_number=False)
 
@@ -66,7 +66,7 @@ def test_print_line(
     assert captured.out == expected_output
 
 
-def test_print_line_with_line_number(capsys):
+def test_print_line_with_line_number(capsys: pytest.CaptureFixture[str]):
     printer = Printer(print_line_number=True)
     line = Line("test", [Interval(0, 4)], 0)
 
@@ -79,7 +79,7 @@ def test_print_line_with_line_number(capsys):
     )
 
 
-def test_print_line_with_filename(capsys):
+def test_print_line_with_filename(capsys: pytest.CaptureFixture[str]):
     printer = Printer(print_line_number=False)
     printer.set_file(Path("test"))
     line = Line("test", [Interval(0, 4)], 0)
@@ -93,7 +93,7 @@ def test_print_line_with_filename(capsys):
     )
 
 
-def test_print_line_with_filename_and_line_number(capsys):
+def test_print_line_with_filename_and_line_number(capsys: pytest.CaptureFixture[str]):
     printer = Printer(print_line_number=True)
     printer.set_file(Path("test"))
     line = Line("test", [Interval(0, 4)], 0)
@@ -108,7 +108,7 @@ def test_print_line_with_filename_and_line_number(capsys):
     )
 
 
-def test_print_message(capsys):
+def test_print_message(capsys: pytest.CaptureFixture[str]):
     printer = Printer(print_line_number=False)
     message = "test message"
 
