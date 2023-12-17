@@ -13,7 +13,7 @@ def _read_file_by_line(path: Path) -> Generator[str, None, None]:
             yield line
 
 
-def _get_all_files_in_directory(directory: Path) -> Generator[str, None, None]:
+def _get_all_files_in_directory(directory: Path) -> Generator[Path, None, None]:
     if not directory.is_dir():
         raise ValueError(f"Directory {directory} does not exist")
 
@@ -28,19 +28,15 @@ def _get_all_files_in_directory(directory: Path) -> Generator[str, None, None]:
                 directory_queue.append(path)
 
 
-def _is_binary(file: Path):
-    file = open(file, "rb")
-    try:
+def _is_binary(path: Path) -> bool:
+    with path.open("rb") as file:
         chunk_size = 1024
-        while 1:
+        while True:
             chunk = file.read(chunk_size)
             if b"\0" in chunk:
                 return True
             if len(chunk) < chunk_size:
                 break
-    finally:
-        file.close()
-
     return False
 
 
@@ -78,18 +74,18 @@ def grep(
 
     if recursive or len(files) > 0:
         for file in files:
-            file = Path(file)
+            file_path = Path(file)
             # No need to set file if there is only one file to be searched.
             if recursive or len(files) > 1:
-                printer.set_file(file)
-            if not file.is_file():
-                printer.print_message(f"{file}: file does not exist")
+                printer.set_file(file_path)
+            if not file_path.is_file():
+                printer.print_message(f"{file_path}: file does not exist")
                 continue
-            if _is_binary(file):
-                printer.print_message(f"{file}: file is binary")
+            if _is_binary(file_path):
+                printer.print_message(f"{file_path}: file is binary")
                 continue
 
-            line_iterator = _read_file_by_line(file)
+            line_iterator = _read_file_by_line(file_path)
             matching_lines_iterator = find_matching_lines(
                 pattern,
                 line_iterator,

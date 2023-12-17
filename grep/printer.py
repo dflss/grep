@@ -21,11 +21,11 @@ class Printer:
         ----------
         print_line_number : Indicates whether the line number should be printed for each line.
         """
-        self.print_line_number = print_line_number
+        self.print_line_number: bool = print_line_number
 
-        self._is_first_print = True  # Used to correctly print the separator.
-        self._file = None
-        self._previous_line_index = -1
+        self._is_first_print: bool = True  # Used to correctly print the separator.
+        self._file: Path | None = None
+        self._previous_line_index: int = -1
 
     def _format_separator(self) -> str:
         return self.SEPARATOR_COLOR + "--" + self.DEFAULT_COLOR

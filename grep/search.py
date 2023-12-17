@@ -29,7 +29,7 @@ def find_matching_lines(
     -------
     Generator of matching lines.
     """
-    previous_lines = deque(maxlen=number_of_lines_before_match)
+    previous_lines: deque[Line] = deque(maxlen=number_of_lines_before_match)
     last_matched_line_index = -1
 
     for i, current_line in enumerate(lines):
