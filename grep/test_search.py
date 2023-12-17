@@ -49,7 +49,11 @@ def compare_iterator_with_expected_output(iterator_to_test, expected_output):
             [
                 Line("test", [Interval(0, 4)], 0),
                 Line("test test", [Interval(0, 4), Interval(5, 9)], 2),
-                Line("test and !test! and some more test", [Interval(0, 4), Interval(10, 14), Interval(30, 34)], 3),
+                Line(
+                    "test and !test! and some more test",
+                    [Interval(0, 4), Interval(10, 14), Interval(30, 34)],
+                    3,
+                ),
             ],
             id="multiple_matches_per_line",
         ),

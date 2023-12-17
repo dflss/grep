@@ -7,7 +7,7 @@ from printer import Printer
 from search import find_matching_lines
 
 
-def _read_file_by_line(path: str) -> Generator[str, None, None]:
+def _read_file_by_line(path: Path) -> Generator[str, None, None]:
     with open(path, "r") as file:
         for line in file:
             yield line
@@ -26,6 +26,22 @@ def _get_all_files_in_directory(directory: Path) -> Generator[str, None, None]:
                 yield path
             elif path.is_dir():
                 directory_queue.append(path)
+
+
+def _is_binary(file: Path):
+    file = open(file, "rb")
+    try:
+        chunk_size = 1024
+        while 1:
+            chunk = file.read(chunk_size)
+            if b"\0" in chunk:
+                return True
+            if len(chunk) < chunk_size:
+                break
+    finally:
+        file.close()
+
+    return False
 
 
 def grep(
@@ -62,8 +78,15 @@ def grep(
 
     if recursive or len(files) > 0:
         for file in files:
-            if not printer.set_current_file(Path(file)):
+            file = Path(file)
+            printer.set_current_file(file)
+            if not file.is_file():
+                printer.print_file_warning("file does not exist")
                 continue
+            if _is_binary(file):
+                printer.print_file_warning("file is binary")
+                continue
+
             line_iterator = _read_file_by_line(file)
             matching_lines_iterator = find_matching_lines(
                 pattern,
