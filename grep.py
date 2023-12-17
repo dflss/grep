@@ -3,8 +3,6 @@ from collections import deque
 from collections.abc import Generator
 from pathlib import Path
 
-from colorama import Fore, Style
-
 from printer import Printer
 from search import find_matching_lines
 
