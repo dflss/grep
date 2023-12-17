@@ -6,16 +6,16 @@ from line import Interval, Line
 from search import find_matching_lines
 
 
-def test_generator_values(generator_iterator_to_test, expected_values):
+def compare_iterator_with_expected_output(iterator_to_test, expected_output):
     range_index = 0
-    for actual in generator_iterator_to_test:
+    for actual in iterator_to_test:
         assert range_index + 1 <= len(
-            expected_values
+            expected_output
         ), "Too many values returned from range"
-        assert expected_values[range_index] == actual
+        assert expected_output[range_index] == actual
         range_index += 1
 
-    assert range_index == len(expected_values), "Too few values returned from range"
+    assert range_index == len(expected_output), "Too few values returned from range"
 
 
 @pytest.mark.parametrize(
@@ -40,6 +40,18 @@ def test_generator_values(generator_iterator_to_test, expected_values):
                 Line("test", [Interval(0, 4)], 3),
             ],
             id="multiple_matches",
+        ),
+        pytest.param(
+            "test",
+            ["test", "not a match", "test test", "test and !test! and some more test"],
+            0,
+            0,
+            [
+                Line("test", [Interval(0, 4)], 0),
+                Line("test test", [Interval(0, 4), Interval(5, 9)], 2),
+                Line("test and !test! and some more test", [Interval(0, 4), Interval(10, 14), Interval(30, 34)], 3),
+            ],
+            id="multiple_matches_per_line",
         ),
         pytest.param(
             "test",
@@ -200,7 +212,7 @@ def test_find_matching_lines(
         number_of_lines_after_match=cast(int, number_of_lines_after_match),
     )
 
-    test_generator_values(
+    compare_iterator_with_expected_output(
         generator,
         expected_result,
     )
