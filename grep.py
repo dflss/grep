@@ -36,7 +36,6 @@ def grep(
     invert_match: bool,
     word: bool,
     print_line_number: bool,
-    ignore_binary_files: bool,
     before_context: int,
     after_context: int,
 ) -> None:
@@ -44,7 +43,6 @@ def grep(
     printer = Printer(
         print_filename=print_filename,
         print_line_number=print_line_number,
-        ignore_binary_files=ignore_binary_files,
     )
 
     if ignore_case:
@@ -61,9 +59,7 @@ def grep(
 
     if recursive or len(files) > 0:
         for file in files:
-            try:
-                printer.set_current_file(file)
-            except ValueError:
+            if not printer.set_current_file(Path(file)):
                 continue
             line_iterator = _read_file_by_line(file)
             matching_lines_iterator = find_matching_lines(

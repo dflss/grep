@@ -7,7 +7,14 @@ class Interval:
 
     start: int
     end: int
-    # post init spr czy start < end i >= 0
+
+    def __post_init__(self):
+        if self.start >= self.end:
+            raise ValueError("Start index must be before end index!")
+        if self.start < 0:
+            raise ValueError("Start index must be non-negative!")
+        if self.end < 0:
+            raise ValueError("End index must be non-negative!")
 
 
 @dataclass
