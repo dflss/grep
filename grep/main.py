@@ -4,11 +4,11 @@ from grep import grep
 
 
 def parse_arguments() -> argparse.Namespace:
-    """
+    """Parse command line arguments.
 
     Returns
     -------
-
+    Parsed command line arguments.
     """
     parser = argparse.ArgumentParser(
         description="Search for PATTERN in each FILE.\n\n"
