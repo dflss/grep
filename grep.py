@@ -2,6 +2,7 @@ import sys
 from collections import deque
 from collections.abc import Generator
 from pathlib import Path
+
 from colorama import Fore, Style
 
 from printer import Printer
@@ -36,16 +37,16 @@ def grep(
     ignore_case: bool,
     invert_match: bool,
     word: bool,
-    line_number: bool,
-    only_text_files: bool,
+    print_line_number: bool,
+    ignore_binary_files: bool,
     before_context: int,
     after_context: int,
 ) -> None:
-    multiple_files = len(files) > 1 or recursive
+    print_filename = len(files) > 1 or recursive
     printer = Printer(
-        print_filename=multiple_files,
-        print_line_number=line_number,
-        only_text_files=only_text_files,
+        print_filename=print_filename,
+        print_line_number=print_line_number,
+        ignore_binary_files=ignore_binary_files,
     )
 
     if ignore_case:
@@ -60,15 +61,22 @@ def grep(
         directory_path = Path(directory)
         files = _get_all_files_in_directory(directory_path)
 
-    if len(files) > 0:
-        for file_index, file in enumerate(files):
+    if recursive or len(files) > 0:
+        for file in files:
+            try:
+                printer.set_current_file(file)
+            except ValueError:
+                continue
             line_iterator = _read_file_by_line(file)
             matching_lines_iterator = find_matching_lines(
                 pattern, line_iterator, before_context, after_context
             )
-            printer.print_output(matching_lines_iterator, file)
+            for line in matching_lines_iterator:
+                printer.print_line(line)
+
     else:
         matching_lines_iterator = find_matching_lines(
             pattern, sys.stdin, before_context, after_context
         )
-        printer.print_output(matching_lines_iterator, None)
+        for line in matching_lines_iterator:
+            printer.print_line(line)

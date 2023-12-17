@@ -43,8 +43,8 @@ def parse_arguments():
         help="print line number with output lines",
     )
     parser.add_argument(
-        "-t",
-        "--only-text-files",
+        "-b",
+        "--ignore-binary-files",
         action="store_true",
         help="supress output for non-text files",
     )
@@ -77,8 +77,8 @@ if __name__ == "__main__":
         ignore_case=args.ignore_case,
         invert_match=args.invert_match,
         word=args.word,
-        line_number=args.line_number,
-        only_text_files=args.only_text_files,
+        print_line_number=args.line_number,
+        ignore_binary_files=args.ignore_binary_files,
         before_context=args.before_context,
         after_context=args.after_context,
     )

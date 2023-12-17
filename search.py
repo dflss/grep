@@ -1,5 +1,4 @@
 import re
-
 from collections import deque
 from collections.abc import Generator, Iterable
 
