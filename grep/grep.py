@@ -55,7 +55,11 @@ def grep(
     if recursive:
         directory = files[0] if len(files) > 0 else "."
         directory_path = Path(directory)
+        if not directory_path.is_dir():
+            print(f"{directory}: directory does not exist")
+            return
         files = _get_all_files_in_directory(directory_path)
+
 
     if recursive or len(files) > 0:
         for file in files:
