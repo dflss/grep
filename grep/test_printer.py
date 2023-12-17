@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from line import Interval, Line
@@ -75,3 +77,42 @@ def test_print_line_with_line_number(capsys):
         f"{Printer.LINE_NUMBER_COLOR}1{Printer.SEPARATOR_COLOR}:{Printer.DEFAULT_COLOR}"
         f"{Printer.MATCHED_TEXT_COLOR}test{Printer.DEFAULT_COLOR}\n"
     )
+
+def test_print_line_with_filename(capsys):
+    printer = Printer(print_line_number=False)
+    printer.set_file(Path("test"))
+    line = Line("test", [Interval(0, 4)], 0)
+
+    printer.print_line(line)
+
+    captured = capsys.readouterr()
+    assert captured.out == (
+        f"{Printer.FILENAME_COLOR}test{Printer.SEPARATOR_COLOR}:{Printer.DEFAULT_COLOR}"
+        f"{Printer.MATCHED_TEXT_COLOR}test{Printer.DEFAULT_COLOR}\n"
+    )
+
+
+def test_print_line_with_filename_and_line_number(capsys):
+    printer = Printer(print_line_number=True)
+    printer.set_file(Path("test"))
+    line = Line("test", [Interval(0, 4)], 0)
+
+    printer.print_line(line)
+
+    captured = capsys.readouterr()
+    assert captured.out == (
+        f"{Printer.FILENAME_COLOR}test{Printer.SEPARATOR_COLOR}:{Printer.DEFAULT_COLOR}"
+        f"{Printer.LINE_NUMBER_COLOR}1{Printer.SEPARATOR_COLOR}:{Printer.DEFAULT_COLOR}"
+        f"{Printer.MATCHED_TEXT_COLOR}test{Printer.DEFAULT_COLOR}\n"
+    )
+
+
+def test_print_message(capsys):
+    printer = Printer(print_line_number=False)
+    message = "test message"
+
+    printer.print_message(message)
+    printer.print_message(message)
+
+    captured = capsys.readouterr()
+    assert captured.out == f"{message}\n{Printer.SEPARATOR_COLOR}--{Printer.DEFAULT_COLOR}\n{message}\n"

@@ -24,15 +24,8 @@ class Printer:
         self.print_line_number = print_line_number
 
         self._is_first_print = True  # Used to correctly print the separator.
-        self._current_file = None
+        self._file = None
         self._previous_line_index = -1
-
-    def print_warning(self, message: str) -> None:
-        if not self._is_first_print:
-            print(self._format_separator())
-        else:
-            print(message)
-            self._is_first_print = False
 
     def _format_separator(self) -> str:
         return self.SEPARATOR_COLOR + "--" + self.DEFAULT_COLOR
@@ -53,14 +46,21 @@ class Printer:
             output += line.text[previous_interval_end:]
         return output
 
-    def set_current_file(self, file: Path) -> None:
+    def set_file(self, file: Path) -> None:
         """Set the file to be printed.
 
         Parameters
         ----------
         file : Path of the file to be printed.
         """
-        self._current_file = file
+        self._file = file
+
+    def print_message(self, message: str) -> None:
+        if not self._is_first_print:
+            print(self._format_separator())
+        else:
+            self._is_first_print = False
+        print(message)
 
     def print_line(self, line: Line) -> None:
         """Print the given line.
@@ -78,8 +78,8 @@ class Printer:
         self._previous_line_index = line.index
 
         output_line = ""
-        if self._current_file is not None:
-            output_line += f"{self.FILENAME_COLOR}{self._current_file}{self.SEPARATOR_COLOR}:{self.DEFAULT_COLOR}"
+        if self._file is not None:
+            output_line += f"{self.FILENAME_COLOR}{self._file}{self.SEPARATOR_COLOR}:{self.DEFAULT_COLOR}"
         if self.print_line_number:
             output_line += f"{self.LINE_NUMBER_COLOR}{line.index + 1}{self.SEPARATOR_COLOR}:{self.DEFAULT_COLOR}"
         output_line += self._format_line(line)
