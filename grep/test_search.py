@@ -187,6 +187,7 @@ def compare_iterator_with_expected_output(iterator_to_test, expected_output):
                 "not a match 5",
                 "test2",
                 "not a match 6",
+                "not a match 7",
             ],
             1,
             1,
