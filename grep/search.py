@@ -11,7 +11,7 @@ def _get_matching_intervals(regex: str, line: str) -> list[Interval]:
 
 
 def find_matching_lines(
-    regex: str, lines: Iterable[str], before_context: int, after_context: int
+    regex: str, lines: Iterable[str], number_of_lines_before_match: int, number_of_lines_after_match: int
 ) -> Generator[Line, None, None]:
     """Find matching lines in a given iterable of lines.
 
@@ -19,14 +19,14 @@ def find_matching_lines(
     ----------
     regex : Regex pattern to search for.
     lines : Iterable of lines to search.
-    before_context : Number of lines to include before a match.
-    after_context : Number of lines to include after a match.
+    number_of_lines_before_match : Number of lines to include before a match.
+    number_of_lines_after_match : Number of lines to include after a match.
 
     Returns
     -------
     Generator of matching lines.
     """
-    previous_lines = deque(maxlen=before_context)
+    previous_lines = deque(maxlen=number_of_lines_before_match)
     last_matched_line_index = -1
 
     for i, current_line in enumerate(lines):
@@ -39,12 +39,12 @@ def find_matching_lines(
             yield Line(current_line, matching_intervals, i)
             last_matched_line_index = i
         else:
-            if before_context > 0 and before_context == len(previous_lines):
+            if number_of_lines_before_match > 0 and number_of_lines_before_match == len(previous_lines):
                 previous_lines.popleft()
-            if len(previous_lines) < before_context:
+            if len(previous_lines) < number_of_lines_before_match:
                 previous_lines.append(Line(current_line, [], i))
             if (
                 last_matched_line_index >= 0
-                and i - last_matched_line_index <= after_context
+                and i - last_matched_line_index <= number_of_lines_after_match
             ):
                 yield Line(current_line, [], i)

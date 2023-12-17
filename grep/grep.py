@@ -36,8 +36,8 @@ def grep(
     invert_match: bool,
     word: bool,
     print_line_number: bool,
-    before_context: int,
-    after_context: int,
+    number_of_lines_before_match: int,
+    number_of_lines_after_match: int,
 ) -> None:
     print_filename = len(files) > 1 or recursive
     printer = Printer(
@@ -67,7 +67,7 @@ def grep(
                 continue
             line_iterator = _read_file_by_line(file)
             matching_lines_iterator = find_matching_lines(
-                pattern, line_iterator, before_context, after_context
+                pattern, line_iterator, number_of_lines_before_match, number_of_lines_after_match
             )
             for line in matching_lines_iterator:
                 printer.print_line(line)

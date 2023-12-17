@@ -78,6 +78,6 @@ if __name__ == "__main__":
         invert_match=args.invert_match,
         word=args.word,
         print_line_number=args.line_number,
-        before_context=args.before_context,
-        after_context=args.after_context,
+        number_of_lines_before_match=args.before_context,
+        number_of_lines_after_match=args.after_context,
     )
