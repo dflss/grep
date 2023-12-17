@@ -78,6 +78,7 @@ def test_print_line_with_line_number(capsys):
         f"{Printer.MATCHED_TEXT_COLOR}test{Printer.DEFAULT_COLOR}\n"
     )
 
+
 def test_print_line_with_filename(capsys):
     printer = Printer(print_line_number=False)
     printer.set_file(Path("test"))
@@ -115,4 +116,7 @@ def test_print_message(capsys):
     printer.print_message(message)
 
     captured = capsys.readouterr()
-    assert captured.out == f"{message}\n{Printer.SEPARATOR_COLOR}--{Printer.DEFAULT_COLOR}\n{message}\n"
+    assert (
+        captured.out
+        == f"{message}\n{Printer.SEPARATOR_COLOR}--{Printer.DEFAULT_COLOR}\n{message}\n"
+    )
