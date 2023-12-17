@@ -79,7 +79,7 @@ def grep(
     if recursive or len(files) > 0:
         for file in files:
             file = Path(file)
-            # Omit setting file if there is only one file to be searched.
+            # No need to set file if there is only one file to be searched.
             if recursive or len(files) > 1:
                 printer.set_file(file)
             if not file.is_file():
