@@ -55,7 +55,7 @@ def test_print_line(
     lines,
     expected_output,
 ):
-    printer = Printer(print_filename=False, print_line_number=False)
+    printer = Printer(print_line_number=False)
 
     for line in lines:
         printer.print_line(line)
@@ -65,7 +65,7 @@ def test_print_line(
 
 
 def test_print_line_with_line_number(capsys):
-    printer = Printer(print_filename=False, print_line_number=True)
+    printer = Printer(print_line_number=True)
     line = Line("test", [Interval(0, 4)], 0)
 
     printer.print_line(line)

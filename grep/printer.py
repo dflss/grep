@@ -14,27 +14,25 @@ class Printer:
     LINE_NUMBER_COLOR = Fore.LIGHTCYAN_EX
     DEFAULT_COLOR = Style.RESET_ALL
 
-    def __init__(self, print_filename: bool, print_line_number: bool) -> None:
+    def __init__(self, print_line_number: bool) -> None:
         """Create a new Printer instance.
 
         Parameters
         ----------
-        print_filename : Indicates whether the filename should be printed for each line.
         print_line_number : Indicates whether the line number should be printed for each line.
         """
-        self.print_filename = print_filename
         self.print_line_number = print_line_number
 
-        self._is_first_file = True  # Used to correctly print the separator.
+        self._is_first_print = True  # Used to correctly print the separator.
         self._current_file = None
         self._previous_line_index = -1
 
-    def print_file_warning(self, message: str) -> None:
-        if not self._is_first_file:
+    def print_warning(self, message: str) -> None:
+        if not self._is_first_print:
             print(self._format_separator())
         else:
-            print(f"{self._current_file}: {message}")
-            self._is_first_file = False
+            print(message)
+            self._is_first_print = False
 
     def _format_separator(self) -> str:
         return self.SEPARATOR_COLOR + "--" + self.DEFAULT_COLOR
@@ -72,15 +70,15 @@ class Printer:
         line : Line to be printed.
         """
         if (line.index > self._previous_line_index + 1) or (
-            line.index == 0 and not self._is_first_file
+            line.index == 0 and not self._is_first_print
         ):
             print(self._format_separator())
-            self._is_first_file = False
+            self._is_first_print = False
 
         self._previous_line_index = line.index
 
         output_line = ""
-        if self._current_file is not None and self.print_filename:
+        if self._current_file is not None:
             output_line += f"{self.FILENAME_COLOR}{self._current_file}{self.SEPARATOR_COLOR}:{self.DEFAULT_COLOR}"
         if self.print_line_number:
             output_line += f"{self.LINE_NUMBER_COLOR}{line.index + 1}{self.SEPARATOR_COLOR}:{self.DEFAULT_COLOR}"

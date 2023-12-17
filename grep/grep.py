@@ -55,9 +55,7 @@ def grep(
     number_of_lines_before_match: int,
     number_of_lines_after_match: int,
 ) -> None:
-    print_filename = len(files) > 1 or recursive
     printer = Printer(
-        print_filename=print_filename,
         print_line_number=print_line_number,
     )
 
@@ -79,12 +77,13 @@ def grep(
     if recursive or len(files) > 0:
         for file in files:
             file = Path(file)
-            printer.set_current_file(file)
+            if len(files) > 1 or recursive:
+                printer.set_current_file(file)
             if not file.is_file():
-                printer.print_file_warning("file does not exist")
+                printer.print_warning(f"{file}: file does not exist")
                 continue
             if _is_binary(file):
-                printer.print_file_warning("file is binary")
+                printer.print_warning(f"{file}: file is binary")
                 continue
 
             line_iterator = _read_file_by_line(file)
