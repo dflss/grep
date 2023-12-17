@@ -105,7 +105,7 @@ class Printer:
         return True
 
     def print_line(self, line: Line) -> None:
-        """
+        """Print the given line.
 
         Parameters
         ----------
