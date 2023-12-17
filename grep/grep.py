@@ -60,21 +60,26 @@ def grep(
             return
         files = _get_all_files_in_directory(directory_path)
 
-
     if recursive or len(files) > 0:
         for file in files:
             if not printer.set_current_file(Path(file)):
                 continue
             line_iterator = _read_file_by_line(file)
             matching_lines_iterator = find_matching_lines(
-                pattern, line_iterator, number_of_lines_before_match, number_of_lines_after_match
+                pattern,
+                line_iterator,
+                number_of_lines_before_match,
+                number_of_lines_after_match,
             )
             for line in matching_lines_iterator:
                 printer.print_line(line)
 
     else:
         matching_lines_iterator = find_matching_lines(
-            pattern, sys.stdin, before_context, after_context
+            pattern,
+            sys.stdin,
+            number_of_lines_before_match,
+            number_of_lines_after_match,
         )
         for line in matching_lines_iterator:
             printer.print_line(line)
