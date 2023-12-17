@@ -44,6 +44,16 @@ def _is_binary(file: Path):
     return False
 
 
+def _get_regex_pattern(pattern: str, ignore_case: bool, invert_match: bool, word: bool):
+    if ignore_case:
+        pattern = rf"(?i){pattern}"
+    if word:
+        pattern = rf"\b{pattern}\b"
+    if invert_match:
+        pattern = rf"^((?!{pattern}).)*$"
+    return pattern
+
+
 def grep(
     pattern: str,
     files: list[str],
@@ -56,13 +66,7 @@ def grep(
     number_of_lines_after_match: int,
 ) -> None:
     printer = Printer(print_line_number=print_line_number)
-
-    if ignore_case:
-        pattern = rf"(?i){pattern}"
-    if word:
-        pattern = rf"\b{pattern}\b"
-    if invert_match:
-        pattern = rf"^((?!{pattern}).)*$"
+    pattern = _get_regex_pattern(pattern, ignore_case, invert_match, word)
 
     if recursive:
         directory = files[0] if len(files) > 0 else "."
