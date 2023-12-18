@@ -69,9 +69,10 @@ class Printer:
         ----------
         line : Line to be printed.
         """
-        if (line.index > self._previous_line_index + 1) or (
-            line.index == 0 and not self._is_first_print
-        ):
+        if (
+            self._previous_line_index != -1
+            and line.index > self._previous_line_index + 1
+        ) or (line.index == 0 and not self._is_first_print):
             print(self._get_formatted_separator())
 
         self._is_first_print = False
