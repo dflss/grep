@@ -12,7 +12,7 @@ def parse_arguments() -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(
         description="Search for PATTERN in each FILE.\n\n"
-        "Example: grep -i 'hello world' menu.h main.c",
+        "Example: python main.py test_pattern test_file -A 2 -B 0 -n",
         epilog="When FILE is not given, read standard input OR current directory if searching recursively.",
         formatter_class=argparse.RawTextHelpFormatter,
     )
