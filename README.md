@@ -18,10 +18,10 @@ Currently implemented features:
 
 ## Getting started
 
-The project is built with Python 3. To get started, first create a virtualenv and install requirements:
+The project is built with Python 3.10. To get started, first create a virtualenv and install requirements:
 
 ```commandline
-python3 -m venv venv
+python3.10 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
