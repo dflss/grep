@@ -1,3 +1,4 @@
+from io import StringIO
 from pathlib import Path
 
 import pytest
@@ -158,8 +159,26 @@ def test_grep_nonexistent_directory(tmp_path: Path, capsys: pytest.CaptureFixtur
     )
 
 
-def test_grep_stdin(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
-    pass
+def test_grep_stdin(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+):
+    monkeypatch.setattr("sys.stdin", StringIO("test\nnot a match\ntest"))
+
+    grep(
+        pattern="test",
+        files=[],
+        recursive=False,
+        print_line_number=False,
+        number_of_lines_before_match=0,
+        number_of_lines_after_match=0,
+    )
+
+    captured = capsys.readouterr()
+    assert captured.out == (
+        f"{Printer.MATCHED_TEXT_COLOR}test{Printer.DEFAULT_COLOR}\n"
+        f"{Printer.SEPARATOR_COLOR}--{Printer.DEFAULT_COLOR}\n"
+        f"{Printer.MATCHED_TEXT_COLOR}test{Printer.DEFAULT_COLOR}\n"
+    )
 
 
 def test_grep_print_line_number(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
