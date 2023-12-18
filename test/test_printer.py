@@ -92,6 +92,7 @@ def test_print_line_with_filename(capsys: pytest.CaptureFixture[str]):
         f"{Printer.MATCHED_TEXT_COLOR}test{Printer.DEFAULT_COLOR}\n"
     )
 
+
 def test_print_line_with_filename_multiple_files(capsys: pytest.CaptureFixture[str]):
     printer = Printer(print_line_number=False)
     line1 = Line("test", [Interval(0, 4)], 0)
