@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from grep import grep
-from printer import Printer
+from src.grep import grep
+from src.printer import Printer
 
 
 def test_grep_single_file(tmp_path: Path, capsys: pytest.CaptureFixture[str]):

@@ -28,12 +28,12 @@ pip install requirements.txt
 
 Then, you can run the program like this:
 ```commandline
-python main.py test_pattern test_file -A 2 -B 0 -n
+python -m src.main test_pattern test_file  -A 2 -B 0 -n
 ```
 
 To see all the options, run:
 ```commandline
-python main.py --help
+python -m src.main --help
 ```
 
 ## Testing

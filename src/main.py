@@ -1,6 +1,6 @@
 import argparse
 
-from grep import grep
+from src.grep import grep
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -12,7 +12,7 @@ def parse_arguments() -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(
         description="Search for PATTERN in each FILE.\n\n"
-        "Example: python main.py test_pattern test_file -A 2 -B 0 -n",
+        "Example: python -m src.main test test_data/test  -A 2 -B 0 -n",
         epilog="When FILE is not given, read standard input OR current directory if searching recursively.",
         formatter_class=argparse.RawTextHelpFormatter,
     )

@@ -2,8 +2,8 @@ from typing import Iterable
 
 import pytest
 
-from line import Interval, Line
-from search import find_matching_lines
+from src.line import Interval, Line
+from src.search import find_matching_lines
 
 
 def compare_iterator_with_expected_output(

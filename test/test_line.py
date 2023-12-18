@@ -1,6 +1,6 @@
 import pytest
 
-from line import Interval, Line
+from src.line import Interval, Line
 
 
 @pytest.mark.parametrize(

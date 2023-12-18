@@ -2,7 +2,7 @@ from pathlib import Path
 
 from colorama import Fore, Style
 
-from line import Line
+from src.line import Line
 
 
 class Printer:

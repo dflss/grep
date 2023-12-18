@@ -3,8 +3,8 @@ from collections import deque
 from collections.abc import Generator
 from pathlib import Path
 
-from printer import Printer
-from search import find_matching_lines
+from src.printer import Printer
+from src.search import find_matching_lines
 
 
 def _read_file_by_line(path: Path) -> Generator[str, None, None]:

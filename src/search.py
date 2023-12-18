@@ -2,7 +2,7 @@ import re
 from collections import deque
 from collections.abc import Generator, Iterable
 
-from line import Interval, Line
+from src.line import Interval, Line
 
 
 def _get_matching_intervals(regex: str, line: str) -> list[Interval]:

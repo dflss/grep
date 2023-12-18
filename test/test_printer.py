@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from line import Interval, Line
-from printer import Printer
+from src.line import Interval, Line
+from src.printer import Printer
 
 
 @pytest.mark.parametrize(
