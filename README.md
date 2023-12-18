@@ -41,5 +41,5 @@ python -m src.main --help
 You can run the tests using:
 
 ```commandline
-pytest
+python -m pytest
 ```
