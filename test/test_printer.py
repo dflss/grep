@@ -92,6 +92,25 @@ def test_print_line_with_filename(capsys: pytest.CaptureFixture[str]):
         f"{Printer.MATCHED_TEXT_COLOR}test{Printer.DEFAULT_COLOR}\n"
     )
 
+def test_print_line_with_filename_multiple_files(capsys: pytest.CaptureFixture[str]):
+    printer = Printer(print_line_number=False)
+    line1 = Line("test", [Interval(0, 4)], 0)
+    line2 = Line("test2", [Interval(0, 4)], 1)
+
+    printer.set_file(Path("test"))
+    printer.print_line(line1)
+    printer.set_file(Path("test2"))
+    printer.print_line(line2)
+
+    captured = capsys.readouterr()
+    assert captured.out == (
+        f"{Printer.FILENAME_COLOR}test{Printer.SEPARATOR_COLOR}:{Printer.DEFAULT_COLOR}"
+        f"{Printer.MATCHED_TEXT_COLOR}test{Printer.DEFAULT_COLOR}\n"
+        f"{Printer.SEPARATOR_COLOR}--{Printer.DEFAULT_COLOR}\n"
+        f"{Printer.FILENAME_COLOR}test2{Printer.SEPARATOR_COLOR}:{Printer.DEFAULT_COLOR}"
+        f"{Printer.MATCHED_TEXT_COLOR}test{Printer.DEFAULT_COLOR}2\n"
+    )
+
 
 def test_print_line_with_filename_and_line_number(capsys: pytest.CaptureFixture[str]):
     printer = Printer(print_line_number=True)

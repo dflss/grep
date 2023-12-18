@@ -24,6 +24,7 @@ class Printer:
         self.print_line_number: bool = print_line_number
 
         self._is_first_print: bool = True  # Used to correctly print the separator.
+        self._is_new_file: bool = False  # Used to correctly print the separator.
         self._file: Path | None = None
         self._previous_line_index: int = -1
 
@@ -54,6 +55,7 @@ class Printer:
         file : Path of the file to be printed.
         """
         self._file = file
+        self._is_new_file = True
 
     def print_message(self, message: str) -> None:
         if not self._is_first_print:
@@ -72,10 +74,11 @@ class Printer:
         if (
             self._previous_line_index != -1
             and line.index > self._previous_line_index + 1
-        ) or (line.index == 0 and not self._is_first_print):
+        ) or (self._is_new_file and not self._is_first_print):
             print(self._get_formatted_separator())
 
         self._is_first_print = False
+        self._is_new_file = False
         self._previous_line_index = line.index
 
         output_line = ""
