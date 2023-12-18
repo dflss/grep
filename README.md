@@ -23,7 +23,7 @@ The project is built with Python 3. To get started, first create a virtualenv an
 ```commandline
 python3 -m venv venv
 source venv/bin/activate
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 Then, you can run the program like this:
