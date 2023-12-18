@@ -31,18 +31,6 @@ def parse_arguments() -> argparse.Namespace:
         "-r", "--recursive", action="store_true", help="search recursively"
     )
     parser.add_argument(
-        "-i",
-        "--ignore-case",
-        action="store_true",
-        help="ignore case distinctions in patterns and data",
-    )
-    parser.add_argument(
-        "-v", "--invert-match", action="store_true", help="select non-matching lines"
-    )
-    parser.add_argument(
-        "-w", "--word", action="store_true", help="match only whole words"
-    )
-    parser.add_argument(
         "-n",
         "--line-number",
         action="store_true",
@@ -74,9 +62,6 @@ if __name__ == "__main__":
         pattern=args.pattern,
         files=args.file,
         recursive=args.recursive,
-        ignore_case=args.ignore_case,
-        invert_match=args.invert_match,
-        word=args.word,
         print_line_number=args.line_number,
         number_of_lines_before_match=args.before_context,
         number_of_lines_after_match=args.after_context,

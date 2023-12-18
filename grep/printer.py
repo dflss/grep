@@ -27,10 +27,10 @@ class Printer:
         self._file: Path | None = None
         self._previous_line_index: int = -1
 
-    def _format_separator(self) -> str:
+    def _get_formatted_separator(self) -> str:
         return self.SEPARATOR_COLOR + "--" + self.DEFAULT_COLOR
 
-    def _format_line(self, line: Line) -> str:
+    def _get_formatted_line(self, line: Line) -> str:
         output = ""
         previous_interval_end = 0
         for interval in line.matching_intervals:
@@ -57,7 +57,7 @@ class Printer:
 
     def print_message(self, message: str) -> None:
         if not self._is_first_print:
-            print(self._format_separator())
+            print(self._get_formatted_separator())
         else:
             self._is_first_print = False
         print(message)
@@ -72,9 +72,9 @@ class Printer:
         if (line.index > self._previous_line_index + 1) or (
             line.index == 0 and not self._is_first_print
         ):
-            print(self._format_separator())
-            self._is_first_print = False
+            print(self._get_formatted_separator())
 
+        self._is_first_print = False
         self._previous_line_index = line.index
 
         output_line = ""
@@ -82,6 +82,6 @@ class Printer:
             output_line += f"{self.FILENAME_COLOR}{self._file}{self.SEPARATOR_COLOR}:{self.DEFAULT_COLOR}"
         if self.print_line_number:
             output_line += f"{self.LINE_NUMBER_COLOR}{line.index + 1}{self.SEPARATOR_COLOR}:{self.DEFAULT_COLOR}"
-        output_line += self._format_line(line)
+        output_line += self._get_formatted_line(line)
 
         print(output_line)

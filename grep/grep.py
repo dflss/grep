@@ -28,47 +28,28 @@ def _get_all_files_in_directory(directory: Path) -> Generator[Path, None, None]:
                 directory_queue.append(path)
 
 
-def _is_binary(path: Path) -> bool:
-    with path.open("rb") as file:
-        chunk_size = 1024
-        while True:
-            chunk = file.read(chunk_size)
-            if b"\0" in chunk:
-                return True
-            if len(chunk) < chunk_size:
-                break
-    return False
-
-
-def _get_regex_pattern(pattern: str, ignore_case: bool, invert_match: bool, word: bool):
-    if ignore_case:
-        pattern = rf"(?i){pattern}"
-    if word:
-        pattern = rf"\b{pattern}\b"
-    if invert_match:
-        pattern = rf"^((?!{pattern}).)*$"
-    return pattern
-
-
 def grep(
     pattern: str,
     files: list[str],
     recursive: bool,
-    ignore_case: bool,
-    invert_match: bool,
-    word: bool,
     print_line_number: bool,
     number_of_lines_before_match: int,
     number_of_lines_after_match: int,
 ) -> None:
     printer = Printer(print_line_number=print_line_number)
-    pattern = _get_regex_pattern(pattern, ignore_case, invert_match, word)
 
     if recursive:
+        if len(files) > 1:
+            printer.print_message(
+                "Only one directory can be searched in recursive mode!"
+            )
+            return
         directory = files[0] if len(files) > 0 else "."
         directory_path = Path(directory)
         if not directory_path.is_dir():
-            print(f"{directory}: directory does not exist")
+            printer.print_message(
+                f"{directory}: directory does not exist or is not a directory"
+            )
             return
         files = _get_all_files_in_directory(directory_path)
 
@@ -81,9 +62,6 @@ def grep(
             if not file_path.is_file():
                 printer.print_message(f"{file_path}: file does not exist")
                 continue
-            if _is_binary(file_path):
-                printer.print_message(f"{file_path}: file is binary")
-                continue
 
             line_iterator = _read_file_by_line(file_path)
             matching_lines_iterator = find_matching_lines(
@@ -92,8 +70,11 @@ def grep(
                 number_of_lines_before_match,
                 number_of_lines_after_match,
             )
-            for line in matching_lines_iterator:
-                printer.print_line(line)
+            try:
+                for line in matching_lines_iterator:
+                    printer.print_line(line)
+            except UnicodeDecodeError:
+                printer.print_message(f"{file_path}: file is binary")
 
     else:
         matching_lines_iterator = find_matching_lines(

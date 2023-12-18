@@ -1,4 +1,4 @@
-from typing import cast
+from typing import Iterable
 
 import pytest
 
@@ -6,7 +6,9 @@ from line import Interval, Line
 from search import find_matching_lines
 
 
-def compare_iterator_with_expected_output(iterator_to_test, expected_output):
+def compare_iterator_with_expected_output(
+    iterator_to_test: Iterable[Line], expected_output: list[Line]
+):
     range_index = 0
     for actual in iterator_to_test:
         assert range_index + 1 <= len(
@@ -211,10 +213,10 @@ def test_find_matching_lines(
     expected_result: list[Line],
 ):
     generator = find_matching_lines(
-        regex=cast(str, regex),
+        regex=regex,
         lines=lines,
-        number_of_lines_before_match=cast(int, number_of_lines_before_match),
-        number_of_lines_after_match=cast(int, number_of_lines_after_match),
+        number_of_lines_before_match=number_of_lines_before_match,
+        number_of_lines_after_match=number_of_lines_after_match,
     )
 
     compare_iterator_with_expected_output(
